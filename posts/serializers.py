@@ -15,11 +15,21 @@ class PostListSerializer(serializers.ModelSerializer):
     category_name = serializers.ReadOnlyField(source='category.name')
     images = PostImageSerializer(many=True)
 
-
     class Meta:
         model = Post
         fields = ('id', 'title', 'owner_username', 'category_name', 'preview', 'images')
 
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        repr['comments_count'] = instance.comments.count()
+        repr['likes_count'] = instance.likes.count()
+
+        user = self.context['request'].user
+        if user.is_authenticated:
+            repr['is_liked'] = user.likes.filter(post=instance).exists()
+            repr['is_favorite'] = user.favorites.filter(post=instance).exists()
+
+        return repr
 
 class PostCreateSerializer(serializers.ModelSerializer):
     category = serializers.PrimaryKeyRelatedField(required=True, queryset=Category.objects.all())

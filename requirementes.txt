@@ -5,4 +5,4 @@ psycopg2-binary
 python-decouple
 dj_rest_auth
 drf-yasg
-django-filters
+django-filter

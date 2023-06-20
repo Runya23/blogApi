@@ -27,7 +27,7 @@ class PostViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
-    def get_serializer(self, *args, **kwargs):
+    def get_serializer_class(self, *args, **kwargs):
         if self.action == 'list':
             return serializers.PostListSerializer
         elif self.action in ('create', 'update', 'partial_update'):
